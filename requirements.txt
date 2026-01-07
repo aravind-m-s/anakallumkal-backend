@@ -9,3 +9,4 @@ bcrypt
 psycopg2-binary
 jwt
 argon2_cffi
+alembic_postgresql_enum
