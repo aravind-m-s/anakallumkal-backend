@@ -5,6 +5,7 @@ from app.modules.admin.router import router as admin_router
 from app.modules.company.router import router as company_router
 from app.modules.category.router import router as category_router
 from app.modules.shop.router import router as shop_router
+from app.modules.product.router import router as product_router
 
 
 app = FastAPI(
@@ -18,6 +19,7 @@ app.include_router(admin_router)
 app.include_router(company_router)
 app.include_router(category_router)
 app.include_router(shop_router)
+app.include_router(product_router)
 
 
 @app.exception_handler(CustomException)
