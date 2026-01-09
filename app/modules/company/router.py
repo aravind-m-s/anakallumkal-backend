@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.modules.company.company import (
     create_company,
@@ -8,10 +8,10 @@ from app.modules.company.company import (
     get_shop_companies,
     update_company,
 )
+from app.services.token import validate_token
 
 router = APIRouter(
-    prefix="/company",
-    tags=["Company"],
+    prefix="/company", tags=["Company"], dependencies=[Depends(validate_token)]
 )
 
 router.post("/create")(create_company)

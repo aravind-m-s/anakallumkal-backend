@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.modules.shop.shop import (
     create_shop,
@@ -7,10 +7,10 @@ from app.modules.shop.shop import (
     get_shop_products,
     update_shop,
 )
+from app.services.token import validate_token
 
 router = APIRouter(
-    prefix="/shop",
-    tags=["Shop"],
+    prefix="/shop", tags=["Shop"], dependencies=[Depends(validate_token)]
 )
 
 router.post("/create")(create_shop)

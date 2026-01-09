@@ -1,4 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
+from app.services.token import validate_token
+
 
 from app.modules.category.category import (
     create_category,
@@ -9,8 +12,7 @@ from app.modules.category.category import (
 )
 
 router = APIRouter(
-    prefix="/category",
-    tags=["Category"],
+    prefix="/category", tags=["Category"], dependencies=[Depends(validate_token)]
 )
 
 router.post("/create")(create_category)

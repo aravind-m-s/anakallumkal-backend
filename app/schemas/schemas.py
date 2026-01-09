@@ -1,5 +1,8 @@
+import datetime
 from uuid import UUID
 from pydantic import BaseModel
+
+from app.enum import OrderStatus, PaymentStatus
 
 
 class User(BaseModel):
@@ -14,6 +17,19 @@ class UserCreate(User):
     password: str
 
 
+class Login(BaseModel):
+    phone_number: str
+    password: str
+
+
+class LoginResponse(Login):
+    id: UUID
+    access_token: str = ""
+
+    class Config:
+        from_attributes = True
+
+
 class UserUpdate(UserCreate):
     password: str | None = None
 
@@ -21,21 +37,20 @@ class UserUpdate(UserCreate):
 class Shop(BaseModel):
     id: UUID
     name: str
-    status: bool
+    is_active: bool
 
 
 class Category(BaseModel):
     id: UUID
     name: str
-    status: bool
+    is_active: bool
 
 
 class Company(BaseModel):
     id: UUID
     name: str
     shop: Shop
-    category: Category
-    status: bool
+    is_active: bool
 
 
 class CreateShop(BaseModel):
@@ -49,7 +64,6 @@ class CreateCategory(BaseModel):
 class CreateCompany(BaseModel):
     name: str
     shop_id: UUID
-    category_id: UUID
 
 
 class Product(BaseModel):
@@ -58,10 +72,10 @@ class Product(BaseModel):
     image: str
     price: float
     stock: int
-    columns: int
+    rows: int
     category: Category
     company: Company
-    status: bool
+    is_active: bool
 
 
 class CreateProduct(BaseModel):
@@ -69,6 +83,23 @@ class CreateProduct(BaseModel):
     image: str
     price: float
     stock: int
-    columns: int
+    rows: int
     category_id: UUID
     company_id: UUID
+
+
+class CartProduct(Product):
+    quantity: int
+
+
+class OrderProduct(BaseModel):
+    product_id: UUID
+    quantity: int
+
+
+class Order(BaseModel):
+    id: UUID
+    order_number: int
+    payment_status: PaymentStatus
+    order_status: OrderStatus
+    created_at: datetime.datetime

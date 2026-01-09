@@ -21,18 +21,15 @@ def create_company(company: CreateCompany, db: Session = Depends(get_db)):
         raise CustomException(status_code=422, detail="Company name is required")
     if not shop:
         raise CustomException(status_code=422, detail="Shop not found")
-    category = db.get(Category, company.category_id)
-    if not category:
-        raise CustomException(status_code=422, detail="Category not found")
 
-    company = Company(company.model_dump())
+    company = Company(**company.model_dump())
     db.add(company)
     db.commit()
     return {"message": "Company created successfully"}
 
 
 def get_companies(status: Optional[bool] = None, db: Session = Depends(get_db)):
-    stmt = select(Company).join(Category).where(Company.deleted_at == None)
+    stmt = select(Company).where(Company.deleted_at == None)
     if status:
         stmt = stmt.where(Company.is_active == status)
     companies = db.execute(stmt).scalars().all()
@@ -41,7 +38,6 @@ def get_companies(status: Optional[bool] = None, db: Session = Depends(get_db)):
             {
                 **company.__dict__,
                 "shop": SchemaShop.model_validate(company.shop.__dict__),
-                "category": SchemaCategory.model_validate(company.category.__dict__),
             }
         )
         for company in companies

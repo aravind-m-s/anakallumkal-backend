@@ -19,7 +19,7 @@ from app.db import get_db
 def create_shop(shop: CreateShop, db: Session = Depends(get_db)):
     if shop.name.strip() == "":
         raise CustomException(status_code=422, detail="Shop name is required")
-    shop = Shop(shop.model_dump())
+    shop = Shop(**shop.model_dump())
     db.add(shop)
     db.commit()
     return {"message": "Shop created successfully"}

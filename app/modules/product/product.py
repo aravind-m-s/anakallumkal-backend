@@ -5,7 +5,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.db import get_db
-from app.models.models import Category, Product
+from app.models.models import Category, Company, Product
 from app.schemas.schemas import CreateProduct, Product as SchemaProduct
 from app.exceptions import CustomException
 
@@ -13,31 +13,31 @@ from app.exceptions import CustomException
 def create_product(product: CreateProduct, db: Session = Depends(get_db)):
     if product.name.strip() == "":
         raise CustomException(
-            status_code=422, detail={"name": "Product name cannot be empty"}
+            status_code=422, data={"name": "Product name cannot be empty"}
         )
     if product.price <= 0:
         raise CustomException(
-            status_code=422, detail={"price": "Product price should be greater than 0"}
+            status_code=422, data={"price": "Product price should be greater than 0"}
         )
 
     if product.stock < 0:
         raise CustomException(
-            status_code=422, detail={"stock": "Product stock cannot be negative"}
+            status_code=422, data={"stock": "Product stock cannot be negative"}
         )
 
     category = db.get(Category, product.category_id)
     if not category:
         raise CustomException(
-            status_code=422, detail={"category_id": "Invalid category id"}
+            status_code=422, data={"category_id": "Invalid category id"}
         )
 
-    company = db.get(Category, product.company_id)
+    company = db.get(Company, product.company_id)
     if not company:
         raise CustomException(
-            status_code=422, detail={"company_id": "Invalid company id"}
+            status_code=422, data={"company_id": "Invalid company id"}
         )
 
-    db.add(Product(product.model_dump()))
+    db.add(Product(**product.model_dump()))
     db.commit()
     return {"message": "Product created successfully"}
 
@@ -55,40 +55,40 @@ def update_product(
 ):
     if product.name.strip() == "":
         raise CustomException(
-            status_code=422, detail={"name": "Product name cannot be empty"}
+            status_code=422, data={"name": "Product name cannot be empty"}
         )
     if product.price <= 0:
         raise CustomException(
-            status_code=422, detail={"price": "Product price should be greater than 0"}
+            status_code=422, data={"price": "Product price should be greater than 0"}
         )
 
     if product.stock < 0:
         raise CustomException(
-            status_code=422, detail={"stock": "Product stock cannot be negative"}
+            status_code=422, data={"stock": "Product stock cannot be negative"}
         )
 
     category = db.get(Category, product.category_id)
     if not category:
         raise CustomException(
-            status_code=422, detail={"category_id": "Invalid category id"}
+            status_code=422, data={"category_id": "Invalid category id"}
         )
 
     company = db.get(Category, product.company_id)
     if not company:
         raise CustomException(
-            status_code=422, detail={"company_id": "Invalid company id"}
+            status_code=422, data={"company_id": "Invalid company id"}
         )
     db_product = db.get(Product, product_id)
     if not db_product:
         raise CustomException(
-            status_code=422, detail={"product_id": "Invalid product id"}
+            status_code=422, data={"product_id": "Invalid product id"}
         )
 
     db_product.name = product.name
     db_product.image = product.image
     db_product.price = product.price
     db_product.stock = product.stock
-    db_product.columns = product.columns
+    db_product.rows = product.rows
     db_product.category_id = product.category_id
     db_product.company_id = product.company_id
 
@@ -100,7 +100,7 @@ def delete_product(product_id: UUID, db: Session = Depends(get_db)):
     db_product = db.get(Product, product_id)
     if not db_product:
         raise CustomException(
-            status_code=422, detail={"product_id": "Invalid product id"}
+            status_code=422, data={"product_id": "Invalid product id"}
         )
     db_product.deleted_at = datetime.datetime.now()
     db.commit()

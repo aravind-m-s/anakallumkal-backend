@@ -19,7 +19,7 @@ from app.db import get_db
 def create_category(category: CreateCategory, db: Session = Depends(get_db)):
     if category.name.strip() == "":
         raise CustomException(status_code=422, detail="Category name is required")
-    category = Category(category.model_dump())
+    category = Category(**category.model_dump())
     db.add(category)
     db.commit()
     return {"message": "Category created successfully"}

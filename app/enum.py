@@ -4,3 +4,19 @@ from enum import Enum
 class UserType(Enum):
     OWNER = "OWNER"
     USER = "USER"
+
+
+class PaymentStatus(Enum):
+    PENDING = "PENDING"
+    CASH_ON_DELIVERY = "CASH_ON_DELIVERY"
+    PAID = "PAID"
+    FAILED = "FAILED"
+
+
+class OrderStatus(Enum):
+    ORDER_CONFIRMED = "ORDER_CONFIRMED"
+    ACCEPTED_BY_VENDOR = "ACCEPTED_BY_VENDOR"
+    OUT_FOR_DELIVERY = "OUT_FOR_DELIVERY"
+    CANCELLED = "CANCELLED"
+    CUSTOMER_NOT_AVAILABLE = "CUSTOMER_NOT_AVAILABLE"
+    REJECTED = "REJECTED"

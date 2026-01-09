@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.modules.product.product import (
     create_product,
@@ -6,11 +6,11 @@ from app.modules.product.product import (
     get_all_products,
     update_product,
 )
+from app.services.token import validate_token
 
 
 router = APIRouter(
-    prefix="/product",
-    tags=["Product"],
+    prefix="/product", tags=["Product"], dependencies=[Depends(validate_token)]
 )
 
 
